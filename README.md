@@ -20,8 +20,11 @@ python A3Cagent.py --cicy=5256 --rank=2 --qmax=2
 ```
 
 For a list of possible arguments and default hyperparameters check out the [A3C file](https://github.com/robin-schneider/gymCICY/agents/A3Cagent.py).
-Unfortunately so far you will only have a pretty dataset collecting rewards, entropy and so on. In order to collect all found models during training and especially when they have been found, you will have to modify the chainer training loop. Go to your ChainerRL installation and modify the file *train_agent_async.py*.
+
+Unfortunately ChainerRL only provides a pretty dataset with min, max and mean rewards, entropy and some more details from the evaluation runs. In order to collect all found models during training and especially when they have been found, you will have to modify the chainer training loop. Go to your ChainerRL installation and modify the file *train_agent_async.py*.
+
 You can probably find it somewhere here: *~/conda/envs/myEnv/lib/python3.X/site-packages/chainerrl/experiments/train_agent_async.py*.
+
 Add to the top of the file the following class
 
 ```python
@@ -52,7 +55,8 @@ if info:
 ```
 
 Alternatively you can also just replace the whole file with the one provided in the agent folder.
-Also check out the jupyter notebook [tutorial](https://github.com/robin-schneider/gymCICY/agents/Tutorial.ipynb) in the agent folder.
+
+For a basic introduction to gym environments and in particular the flipping environment used in our paper check out the jupyter notebook [tutorial](https://github.com/robin-schneider/gymCICY/blob/master/agents/Tutorial.ipynb) in the agent folder.
 
 Furthermore, you might want to use the latest pyCICY version. There is a bigger update planned which should cut down the cohomology computation time significanty. Update with
 
@@ -77,55 +81,4 @@ Currently there are five different environments:
 
 ## References and Literature
 
-We consider line bundle models as presented in:
-
-```tex
-@article{Anderson:2013xka,
-      author         = "Anderson, Lara B. and Constantin, Andrei and Gray, James
-                        and Lukas, Andre and Palti, Eran",
-      title          = "{A Comprehensive Scan for Heterotic SU(5) GUT models}",
-      journal        = "JHEP",
-      volume         = "01",
-      year           = "2014",
-      pages          = "047",
-      doi            = "10.1007/JHEP01(2014)047",
-      eprint         = "1307.4787",
-      archivePrefix  = "arXiv",
-      primaryClass   = "hep-th",
-      SLACcitation   = "%%CITATION = ARXIV:1307.4787;%%"
-}
-```
-
-Machine learning reference for string theorists:
-
-```tex
-@article{Ruehle:2020jrk,
-      author         = "Ruehle, Fabian",
-      title          = "{Data science applications to string theory}",
-      journal        = "Phys. Rept.",
-      volume         = "839",
-      year           = "2020",
-      pages          = "1-117",
-      doi            = "10.1016/j.physrep.2019.09.005",
-      SLACcitation   = "%%CITATION = PRPLC,839,1;%%"
-}
-```
-
-The environments are heavily inspired by:
-
-```tex
-@article{Halverson:2019tkf,
-      author         = "Halverson, James and Nelson, Brent and Ruehle, Fabian",
-      title          = "{Branes with Brains: Exploring String Vacua with Deep
-                        Reinforcement Learning}",
-      journal        = "JHEP",
-      volume         = "06",
-      year           = "2019",
-      pages          = "003",
-      doi            = "10.1007/JHEP06(2019)003",
-      eprint         = "1903.11616",
-      archivePrefix  = "arXiv",
-      primaryClass   = "hep-th",
-      SLACcitation   = "%%CITATION = ARXIV:1903.11616;%%"
-}
-```
+We consider line bundle models as presented in [A Comprehensive Scan for Heterotic SU(5) GUT models](https://arxiv.org/abs/1307.4787v1) by Anderson et al.. A well written introduction to machine learning applications in string theory by F. Ruehle can be found [here](https://www.sciencedirect.com/science/article/pii/S0370157319303072). This project is inspired by the recent *Branes with Brains* [paper](https://arxiv.org/abs/1903.11616).
