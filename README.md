@@ -19,7 +19,7 @@ You can then run the agent from the terminal with, e.g.
 python A3Cagent.py --cicy=5256 --rank=2 --qmax=2
 ```
 
-For a list of possible arguments and default hyperparameters check out the [A3C file](https://github.com/robin-schneider/gymCICY/agents/A3Cagent.py).
+For a list of possible arguments and default hyperparameters check out the [A3C file](https://github.com/robin-schneider/gymCICY/blob/master/agents/A3Cagent.py).
 
 Unfortunately ChainerRL only provides a pretty dataset with min, max and mean rewards, entropy and some more details from the evaluation runs. In order to collect all found models during training and especially when they have been found, you will have to modify the chainer training loop. Go to your ChainerRL installation and modify the file *train_agent_async.py*.
 
