@@ -1,6 +1,6 @@
 # gymCICY
 
-A set of OpenAI environments for studying heterotic line bundle models on CICYs based on the [pyCICY](https://github.com/robin-schneider/CICY/) toolkit. For an explanation of physical setting and the different environments check out our paper on [arxiv](https://arxiv.org/abs/2003.XXXXX).
+A set of OpenAI environments for studying heterotic line bundle models on CICYs based on the [pyCICY](https://github.com/robin-schneider/CICY/) toolkit. For an explanation of physical setting and the different environments check out our paper on [arxiv](https://arxiv.org/abs/2003.04817).
 
 ## Set up
 
