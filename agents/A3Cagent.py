@@ -164,6 +164,8 @@ if __name__ == '__main__':
     # Reward hyperparameters
     parser.add_argument('--nreward', type=int, default=1,
                          help='Allows for punishment of the agent, default = 1-True.')
+    parser.add_argument('--wolfram', type=int, default=0,
+                         help='Enables wolfram kernel for stability computation, default = 0-False.')
     parser.add_argument('--r-fermion', type=int, default= 1e7)
     parser.add_argument('--r-doublet', type=int, default= 1e6)
     parser.add_argument('--r-triplet', type=int, default= 1e4)
@@ -173,17 +175,23 @@ if __name__ == '__main__':
     parser.add_argument('--r-sun', type=int, default= 5)
     parser.add_argument('--r-stability', type=int, default= 1e6)
 
+
     args = parser.parse_args()
 
     if args.nreward == 0:
         nreward = False
     else:
         nreward = True
+    if args.wolfram == 0:
+        nreward = False
+    else:
+        nreward = True
+        
 
     rewards={'fermion': args.r_fermion, 'doublet': args.r_fermion,
              'triplet': args.r_triplet, 'wstability': args.r_wstability,
              'index': args.r_index, 'bianchi': args.r_bianchi,
-             'sun': args.r_sun, 'stability': args.r_stability, 'negative': nreward}
+             'sun': args.r_sun, 'stability': args.r_stability, 'negative': nreward, 'wolfram': wolfram}
     
     logging.basicConfig(format='%(name)s:%(levelname)s:%(message)s')
     logger = logging.getLogger('A3Cagent')

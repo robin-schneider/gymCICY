@@ -27,7 +27,7 @@ import scipy as sp
 from pyCICY import CICY
 import gym
 import logging
-#from gym_CICYlbmodels.envs.stability import *
+from gymCICY.envs.stability import *
 from gym import spaces
 from gym.utils import seeding
 import traceback
@@ -40,7 +40,7 @@ class lbmodel(gym.Env):
 
     def __init__(self, M, r=2, max=5, 
                     rewards={'fermion': 1e7, 'doublet': 1e6, 'triplet': 1e4, 'wstability': 2,
-                                'index': 100, 'bianchi': 1e4, 'sun': 5, 'stability': 1e6, 'negative': True}):
+                                'index': 100, 'bianchi': 1e4, 'sun': 5, 'stability': 1e6, 'negative': True, 'wolfram': False}):
 
         #define underlying CICY
         self.M = M
@@ -59,6 +59,7 @@ class lbmodel(gym.Env):
         #weak stability, i.e. each line bundle by itself
         self.reward_wstability = rewards['wstability']
         self.reward_stability = rewards['stability']
+        self.wolfram = rewards['wolfram']
         self.reward_index = rewards['index']
         self.reward_bianchi = rewards['bianchi']
         #vanishing first chern, su(n) bundle
@@ -240,10 +241,11 @@ class lbmodel(gym.Env):
 
         # full stability appears to be not working in python; 
         # maybe use a mathematica kernel
-        """if self._stability():
-            reward += self.reward_stability
-        else:
-            return reward"""
+        if self.wolfram:
+            if self._stability():
+                reward += self.reward_stability
+            else:
+                return reward
         
         # if we made it till here we checked all conditions and found an sm
         #print('found a SM. Episode: '+str(self.nEpisode)+' and step '+str(self.nsteps))
@@ -287,9 +289,9 @@ class lbmodel(gym.Env):
         stable = False
         # need to solve numerically
 
-        #stable = stab.scipy_stability(self.M, self.V)
-        #stable = stab.nlopt_stability(self.M, self.V)
-        #stable = stab.wolfram_stability(self.M, self.V)
+        #stable = scipy_stability(self.M, self.V)
+        #stable = nlopt_stability(self.M, self.V)
+        stable = wolfram_stability(self.M, self.V)
         
         return stable
 

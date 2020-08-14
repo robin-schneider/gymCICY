@@ -39,7 +39,7 @@ class f4p1(flipping):
 
     def __init__(self, M, r=2, max=5, 
                     rewards={'fermion': 1e7, 'doublet': 1e6, 'triplet': 1e4, 'wstability': 2,
-                                'index': 100, 'bianchi': 1e4, 'sun': 5, 'stability': 1e6, 'negative': True}):
+                                'index': 100, 'bianchi': 1e4, 'sun': 5, 'stability': 1e6, 'negative': True, 'wolfram': False}):
         super().__init__(M, r, max, rewards)
 
         #action space is one line bundles smaller
