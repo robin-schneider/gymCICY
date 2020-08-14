@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="gymCICY",
-    version="0.1",
+    version="0.2",
     author="Robin Schneider",
     author_email="robin.schneider@physics.uu.se",
     description="A gym environment for exploring heterotic line bundle models on CICYs",
@@ -25,7 +25,7 @@ setuptools.setup(
         "scipy",
         "chainer",
         "chainerrl",
-        "pyCICY>=0.3",
+        "pyCICY>=0.5",
         "gym",
     ],
 )
