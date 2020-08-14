@@ -304,14 +304,13 @@ class lbmodel(gym.Env):
         """
         for entry in self.V:
             h = np.array(self.M.line_co(entry)).astype(np.int16)
-            if h[2] > 0 or h[0] > 0 or h[3] > 0:
-                # we found some antigenerations
-                # or stability issues.
+            if h[2] > 0 or h[0] > 0 or h[3] > 0 or h[1]%self.r != 0:
+                # we found antifamilies/stability problems/no equivariant
                 return False
         return True
 
     def _higgs_doublet(self):
-        """Determines if at least one Higgs doublet exist.
+        r"""Determines if at least one Higgs doublet exist.
         
         Returns
         -------
@@ -397,7 +396,8 @@ class lbmodel(gym.Env):
         for i in range(5):
             #round and convert to int because of floating point issues.
             self.index[i] = np.round(self.M.line_co_euler(self.V[i])).astype(np.int16)
-            if self.index[i] > 0 or self.index[i] < (-3)*self.r:
+            # check if index in range and divisible by rank for equivariant structure
+            if self.index[i] > 0 or self.index[i] < (-3)*self.r or self.index[i]%self.r != 0:
                 satisfied -= 1
         
         if satisfied != 5:
