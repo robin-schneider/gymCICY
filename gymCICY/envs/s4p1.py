@@ -78,8 +78,8 @@ class s4p1(lbmodel):
         tuple(bool, float)
             (satisfied, reward)
         """
-        signs = np.sign(self.V[self.a_linebundles])
-        if -1 in signs and 1 in signs:
+        signs = self.M.l_slope(self.V[self.a_linebundles])[0]
+        if signs:
             return True, self.reward_wstability
         else:
             return False, 0
@@ -98,7 +98,7 @@ class s4p1(lbmodel):
         tuple(bool, float)
             (satisfied, reward)
         """
-        if self.index[self.a_linebundles] > 0 or self.index[self.a_linebundles] < (-3)*self.r:
+        if self.index[self.a_linebundles] > 0 or self.index[self.a_linebundles] < (-3)*self.r or self.index[self.a_linebundles]%self.r != 0:
             return False, 0
 
         if self.findex != (-3)*self.r:
