@@ -191,7 +191,7 @@ if __name__ == '__main__':
     rewards={'fermion': args.r_fermion, 'doublet': args.r_fermion,
              'triplet': args.r_triplet, 'wstability': args.r_wstability,
              'index': args.r_index, 'bianchi': args.r_bianchi,
-             'sun': args.r_sun, 'stability': args.r_stability, 'negative': nreward, 'wolfram': wolfram}
+             'sun': args.r_sun, 'stability': args.r_stability, 'negative': nreward, 'wolfram': args.wolfram}
     
     logging.basicConfig(format='%(name)s:%(levelname)s:%(message)s')
     logger = logging.getLogger('A3Cagent')

@@ -31,16 +31,23 @@ from gymCICY.envs.stability import *
 from gym import spaces
 from gym.utils import seeding
 import traceback
-
+import json
+import os as os
 
 logger = logging.getLogger(__name__)
 
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
 
 class lbmodel(gym.Env):
 
     def __init__(self, M, r=2, max=5, 
                     rewards={'fermion': 1e7, 'doublet': 1e6, 'triplet': 1e4, 'wstability': 2,
-                                'index': 100, 'bianchi': 1e4, 'sun': 5, 'stability': 1e6, 'negative': True, 'wolfram': False}):
+                                'index': 100, 'bianchi': 1e4, 'sun': 5, 'stability': 1e6, 'negative': True, 'wolfram': False},
+                    fname = ''):
 
         #define underlying CICY
         self.M = M
@@ -87,8 +94,14 @@ class lbmodel(gym.Env):
 
         #some tracking
         self.nEpisode = -1
-        self.nsteps = -1
+        self.nsteps = 0
+        self.tsteps = 0
         self.found_sm = False
+        self.fname = fname
+        if self.fname != '':
+            self.directory = os.path.dirname(self.fname)
+            if not os.path.exists(self.directory):
+                os.makedirs(self.directory)
         
     def step(self, action):
         r"""Performs a step in action space.
@@ -115,6 +128,7 @@ class lbmodel(gym.Env):
             raise RuntimeError("Episode is done; found a SM.")
 
         self.nsteps += 1
+        self.tsteps += 1
         self._take_action(action)
         reward = self._get_reward()
         obs = self._get_state()
@@ -123,7 +137,11 @@ class lbmodel(gym.Env):
         done = False
         if self.found_sm:
             done = True
-            info = {'V': self.V, 'nEpisode': self.nEpisode, 'nsteps': self.nsteps}
+            info = {'V': self.V, 'nEpisode': self.nEpisode, 'nsteps': self.nsteps,
+                     'tsteps': self.tsteps, 'id': self.id}
+            if self.fname != '':
+                with open(self.fname, 'a') as f:
+                    f.write(json.dumps(info, cls=NumpyEncoder)+'\n')
         
         if self.negative_reward:
             return obs, reward, done, info
@@ -289,9 +307,9 @@ class lbmodel(gym.Env):
         stable = False
         # need to solve numerically
 
-        #stable = scipy_stability(self.M, self.V)
-        #stable = nlopt_stability(self.M, self.V)
-        stable = wolfram_stability(self.M, self.V)
+        #stable = scipy_stability(self.V, self.M)
+        #stable = nlopt_stability(self.V, self.M)
+        stable = wolfram_stability(self.V, self.M)
         
         return stable
 
@@ -424,7 +442,7 @@ class lbmodel(gym.Env):
         """
         self.V = np.random.randint(-1,2,(self.n_linebundles, self.M.len)).astype(np.int16)
         self.found_sm = False
-        self.nsteps = -1
+        self.nsteps = 0
         self.index = np.zeros(5)
         self.findex = 0
         self.nEpisode += 1
@@ -455,6 +473,7 @@ class lbmodel(gym.Env):
             seed
         """
         self.np_random, seed = seeding.np_random(seed)
+        self.id = seed
         np.random.seed(seed)
         return [seed]
 
