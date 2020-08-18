@@ -27,5 +27,6 @@ setuptools.setup(
         "chainerrl",
         "pyCICY>=0.5",
         "gym",
+        "wolframclient",
     ],
 )

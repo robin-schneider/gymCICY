@@ -4,3 +4,4 @@ pyCICY
 gym
 chainer
 chainerrl
+wolframclient
