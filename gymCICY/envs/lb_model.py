@@ -204,62 +204,69 @@ class lbmodel(gym.Env):
         reward = 0
 
         # we start with if it is an SU(N)bundle
-        sun, rsun = self._sun()
-        reward += rsun
-        if not sun:
-            return reward
+        if self.reward_sun > 0:
+            sun, rsun = self._sun()
+            reward += rsun
+            if not sun:
+                return reward
 
         # then check, the weak stability constraint
-        stab, rstab = self._wstability()
-        reward += rstab
-        if not stab:
-            return reward
+        if self.reward_wstability > 0:
+            stab, rstab = self._wstability()
+            reward += rstab
+            if not stab:
+                return reward
 
         # check index contains constraints 3+4
-        index, rindex = self._index()
-        reward += rindex
-        if not index:
-            return reward
+        if self.reward_index > 0:
+            index, rindex = self._index()
+            reward += rindex
+            if not index:
+                return reward
 
         # and the bianchi identity
-        if self._bianchi():
-            reward += self.reward_bianchi
-        else:
-            return reward
+        if self.reward_bianchi > 0:
+            if self._bianchi():
+                reward += self.reward_bianchi
+            else:
+                return reward
 
         # we continue with finding triplets, which is still quick
-        if self._index_triplet():
-            reward += self.reward_triplet
-        else:
-            return reward
+        if self.reward_triplet > 0:
+            if self._index_triplet():
+                reward += self.reward_triplet
+            else:
+                return reward
 
         # existence of some higgs doublets
-        try:
-            hd = self._higgs_doublet()
-        except Exception as e:
-            #most likely meomry error
-            logger.warning('There has been a problem. Most likely in allocating sufficient memory.')
-            logger.error(traceback.format_exc())
-            logger.warning('The reward computation has terminated at Higgs doublets.')
-            return reward
-        if hd:
-            reward += self.reward_doublet
-        else:
-            return reward
+        if self.reward_doublet > 0:
+            try:
+                hd = self._higgs_doublet()
+            except Exception as e:
+                #most likely memory error
+                logger.warning('There has been a problem. Most likely in allocating sufficient memory.')
+                logger.error(traceback.format_exc())
+                logger.warning('The reward computation has terminated at Higgs doublets.')
+                return reward
+            if hd:
+                reward += self.reward_doublet
+            else:
+                return reward
 
         # no anti generations
-        try:
-            tf = self._three_fermions()
-        except Exception as e:
-            #most likely meomry error
-            logger.warning('There has been a problem. Most likely in allocating sufficient memory.')
-            logger.error(traceback.format_exc())
-            logger.warning('The reward computation has terminated at no anti generations.')
-            return reward
-        if tf:
-            reward += self.reward_fermion
-        else:
-            return reward
+        if self.reward_fermion > 0:
+            try:
+                tf = self._three_fermions()
+            except Exception as e:
+                #most likely memory error
+                logger.warning('There has been a problem. Most likely in allocating sufficient memory.')
+                logger.error(traceback.format_exc())
+                logger.warning('The reward computation has terminated at no anti generations.')
+                return reward
+            if tf:
+                reward += self.reward_fermion
+            else:
+                return reward
 
         # full stability appears to be not working in python; 
         # maybe use a mathematica kernel
