@@ -47,7 +47,7 @@ class lbmodel(gym.Env):
     def __init__(self, M, r=2, max=5, 
                     rewards={'fermion': 1e7, 'doublet': 1e6, 'triplet': 1e4, 'wstability': 2,
                                 'index': 100, 'bianchi': 1e4, 'sun': 5, 'stability': 1e6, 'negative': True, 'wolfram': False},
-                    fname = ''):
+                    fname = '', max_steps = -1):
 
         #define underlying CICY
         self.M = M
@@ -84,7 +84,6 @@ class lbmodel(gym.Env):
         self.observation_space = spaces.Box(low=-self.max, high=self.max, 
                     shape=(self.n_linebundles, self.M.len), dtype=np.int16)
 
-
         #some properties of V; include some randomness
         self.V = np.zeros((self.n_linebundles, self.M.len), dtype=np.int16)
         # improve this by saving the poly and just substitute
@@ -94,8 +93,9 @@ class lbmodel(gym.Env):
 
         #some tracking
         self.nEpisode = -1
-        self.nsteps = 0
-        self.tsteps = 0
+        self.max_steps = max_steps
+        self.nsteps = 0#episode steps
+        self.tsteps = 0#total steps
         self.found_sm = False
         self.fname = fname
         if self.fname != '':
@@ -143,6 +143,10 @@ class lbmodel(gym.Env):
                 with open(self.fname, 'a') as f:
                     f.write(json.dumps(info, cls=NumpyEncoder)+'\n')
         
+        if self.max_steps > 0 and self.nsteps == self.max_steps:
+            # add maximal step
+            done = True
+
         if self.negative_reward:
             return obs, reward, done, info
         else:
