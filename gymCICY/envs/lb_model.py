@@ -323,9 +323,11 @@ class lbmodel(gym.Env):
         if self.wolfram:
             stable = wolfram_stability(self.V, self.M)
         else:
-            # take necessary condition from 1307.4787 (pg.13)
+            # apply necessary condition from 1307.4787 (pg.13)
             Ms = np.array([np.einsum('ijk,i', self.M.triple, L) for L in self.V])
-            #take 100 random configurations
+            # take 100 random configurations
+            # not really sure, how efficient this is in practice
+            # when looking through the unstable models from wolfram result there is vast difference
             rnd_coeffs = np.random.randint(low=-5, high=6, size=(100, 5))
             for coeffs in rnd_coeffs:
                 total = np.einsum('i,ijk', coeffs, Ms)
