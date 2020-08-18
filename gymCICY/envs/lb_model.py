@@ -27,7 +27,7 @@ import scipy as sp
 from pyCICY import CICY
 import gym
 import logging
-from gymCICY.envs.stability import *
+from gymCICY.envs.stability import wolfram_stability
 from gym import spaces
 from gym.utils import seeding
 import traceback
@@ -270,7 +270,7 @@ class lbmodel(gym.Env):
 
         # full stability appears to be not working in python; 
         # maybe use a mathematica kernel
-        if self.wolfram:
+        if self.reward_stability > 0:
             if self._stability():
                 reward += self.reward_stability
             else:
@@ -320,7 +320,19 @@ class lbmodel(gym.Env):
 
         #stable = scipy_stability(self.V, self.M)
         #stable = nlopt_stability(self.V, self.M)
-        stable = wolfram_stability(self.V, self.M)
+        if self.wolfram:
+            stable = wolfram_stability(self.V, self.M)
+        else:
+            # take necessary condition from 1307.4787 (pg.13)
+            Ms = np.array([np.einsum('ijk,i', self.M.triple, L) for L in self.V])
+            #take 100 random configurations
+            rnd_coeffs = np.random.randint(low=-5, high=6, size=(100, 5))
+            for coeffs in rnd_coeffs:
+                total = np.einsum('i,ijk', coeffs, Ms)
+                signs = np.sign(total)
+                if 1 in signs and -1 in signs:
+                    stable = True
+                    break
         
         return stable
 
@@ -487,6 +499,4 @@ class lbmodel(gym.Env):
         self.id = seed
         np.random.seed(seed)
         return [seed]
-
-
-        
+       
