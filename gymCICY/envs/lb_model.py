@@ -325,16 +325,19 @@ class lbmodel(gym.Env):
         else:
             # apply necessary condition from 1307.4787 (pg.13)
             Ms = np.array([np.einsum('ijk,i', self.M.triple, L) for L in self.V])
-            # take 100 random configurations
-            # not really sure, how efficient this is in practice
-            # when looking through the unstable models from wolfram result there is vast difference
-            rnd_coeffs = np.random.randint(low=-5, high=6, size=(100, 5))
+            # take 1000 random configurations
+            # matches almost the results of wolfram_stability
+            rnd_coeffs = np.random.randint(low=-5, high=6, size=(1000, 5))
             for coeffs in rnd_coeffs:
                 total = np.einsum('i,ijk', coeffs, Ms)
-                signs = np.sign(total)
-                if 1 in signs and -1 in signs:
-                    stable = True
-                    break
+                signs = np.unique(np.sign(total))
+                if not(1 in signs and -1 in signs):
+                    if not (len(signs) == 1 and 0 in signs):
+                        #stable = False
+                        return False
+            # all linear combinations contain both signs, very likely that 
+            # it is stable somewhere in the Kähler cone
+            stable = True
         
         return stable
 
