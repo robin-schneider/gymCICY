@@ -10,58 +10,38 @@ Simply install with pip:
 pip install git+https://github.com/robin-schneider/gymCICY
 ```
 
-## ChainerRL and A3C
+## Registering the environment
 
-To run the A3C agent in the agent directory you will need the [cicylist](http://www-thphys.physics.ox.ac.uk/projects/CalabiYau/cicylist/cicylist.txt) in the same folder.
-You can then run the agent from the terminal with, e.g.
-
-```console
-python A3Cagent.py --cicy=5256 --rank=2 --qmax=2
-```
-
-For a list of possible arguments and default hyperparameters check out the [A3C file](https://github.com/robin-schneider/gymCICY/blob/master/agents/A3Cagent.py).
-
-Unfortunately ChainerRL only provides a pretty dataset with min, max and mean rewards, entropy and some more details from the evaluation runs. In order to collect all found models during training and especially when they have been found, you will have to modify the chainer training loop. Go to your ChainerRL installation and modify the file *train_agent_async.py*.
-
-You can probably find it somewhere here: *~/conda/envs/myEnv/lib/python3.X/site-packages/chainerrl/experiments/train_agent_async.py*.
-
-Add to the top of the file the following class
+To register the environment use the following (here, Quintic and *f4p1*):
 
 ```python
-import json
-import numpy as np
+import gym
+import gymCICY
+from pyCICY import CICY
 
-class NumpyEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        return json.JSONEncoder.default(self, obj)
+M = CICY([[4,5]])
+#rewards = {}
+max_steps = 300
+seed = 2020
+
+gym.envs.register(
+        id = 'CICY-v0,
+        entry_point = 'gymCICY.envs.f4p1:f4p1',
+        kwargs={'M': M, 'r': 5, 'max': 2, #'rewards' : rewards,
+                    'fname': os.path.join('results', 'models'), 'max_steps': max_steps},
+        )
+env = gym.make(env_id)
+env.seed(seed)
 ```
 
-Now add to the training loop after
-
-```python
-if done or ... :
-```
-
-these lines
-
-```python
-if info:
-    filename = os.path.join(outdir, 'model_info')
-    info['gt'] = global_t
-    with open(filename, 'a') as f:
-        f.write(json.dumps(info, cls=NumpyEncoder)+'\n')
-```
-
-Alternatively you can also just replace the whole file with the one provided in the agent folder.
+Note that *fname* is the file name into which *env* will write all models it finds. *env* keeps track of episodes and steps and has a unique id corresponding to its seed.
 
 For a basic introduction to gym environments and in particular the flipping environment used in our paper check out the jupyter notebook [tutorial](https://github.com/robin-schneider/gymCICY/blob/master/agents/Tutorial.ipynb) in the agent folder.
 
 Furthermore, you might want to use the latest pyCICY version. There is a bigger update planned which should cut down the cohomology computation time significanty. Update with
 
 ```console
-pip install git+https://github.com/robin-schneider/CICY
+pip install --upgrade git+https://github.com/robin-schneider/CICY
 ```
 
 ## Environments
@@ -74,10 +54,11 @@ Currently there are five different environments:
 4. **stacking** the agent picks a line bundle from a precompiled list of line bundles satisfying slope and index constraint replacing the one of t-5 ago.
 5. **s4p1** similar to stacking with the difference being that the last line bundle is fixed by the condition c1(V) = 0. This is the stacking environment used in the paper.
 
-## Future Updates
+## Updates and Upgrades
 
-1. Currently gymCICY does not check for stability as we were unable to find a library solving the quadratic inequalities reliably enough. We hope to fix this problem in the future and are open for suggestions regarding potential libraries. For the moment we recommend using mathematicas powerful noptimize to solve the inequalities.
-2. The pyCICY library can be fairly memory hungry, which sometimes results in configurations being skipped, as the reward can not be successfully computed. This happens particularly often for manifolds with increasing h11.
+1. gymCICY can check for stability using the wolfram language. This can be activated by setting reward['wolfram'] = 1. Otherwise it uses a necessary check to check for stable sums.
+2. Cohomology computations of the pyCICY library can fail due to a lack of available memory. This results in configurations being skipped, as the reward can not be successfully computed. It happens particularly often for manifolds with increasing h11.
+3. Rewards can be disable by setting them to -1.
 
 ## References and Literature
 
