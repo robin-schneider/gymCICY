@@ -23,9 +23,10 @@ M = CICY([[4,5]])
 #rewards = {}
 max_steps = 300
 seed = 2020
+env_id = 'CICY-v0'
 
 gym.envs.register(
-        id = 'CICY-v0,
+        id = env_id,
         entry_point = 'gymCICY.envs.f4p1:f4p1',
         kwargs={'M': M, 'r': 5, 'max': 2, #'rewards' : rewards,
                     'fname': os.path.join('results', 'models'), 'max_steps': max_steps},
@@ -38,7 +39,7 @@ Note that *fname* is the file name into which *env* will write all models it fin
 
 For a basic introduction to gym environments and in particular the flipping environment used in our paper check out the jupyter notebook [tutorial](https://github.com/robin-schneider/gymCICY/blob/master/agents/Tutorial.ipynb) in the agent folder.
 
-Furthermore, you might want to use the latest pyCICY version. There is a bigger update planned which should cut down the cohomology computation time significanty. Update with
+Furthermore, you might want to use the latest pyCICY version. Update with
 
 ```console
 pip install --upgrade git+https://github.com/robin-schneider/CICY
