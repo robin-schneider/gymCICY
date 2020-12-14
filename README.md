@@ -37,7 +37,7 @@ env.seed(seed)
 
 Note that *fname* is the file name into which *env* will write all models it finds. *env* keeps track of episodes and steps and has a unique id corresponding to its seed.
 
-For a basic introduction to gym environments and in particular the flipping environment used in our paper check out the jupyter notebook [tutorial](https://github.com/robin-schneider/gymCICY/blob/master/agents/Tutorial.ipynb) in the agent folder.
+For a basic introduction to gym environments and in particular the flipping environment used in our paper check out the jupyter notebook [tutorial](https://github.com/robin-schneider/gymCICY/blob/master/agents/Tutorial.ipynb) (Note: The notebook was for an older verison.) in the agent folder.
 
 Furthermore, you might want to use the latest pyCICY version. Update with
 
@@ -55,7 +55,7 @@ Currently there are five different environments:
 4. **stacking** the agent picks a line bundle from a precompiled list of line bundles satisfying slope and index constraint replacing the one of t-5 ago.
 5. **s4p1** similar to stacking with the difference being that the last line bundle is fixed by the condition c1(V) = 0. This is the stacking environment used in the paper.
 
-## Updates and Upgrades
+## More Information
 
 1. gymCICY can check for stability using the wolfram language. This can be activated by setting reward['wolfram'] = 1. Otherwise it uses a necessary check to check for stable sums.
 2. Cohomology computations of the pyCICY library can fail due to a lack of available memory. This results in configurations being skipped, as the reward can not be successfully computed. It happens particularly often for manifolds with increasing h11.
